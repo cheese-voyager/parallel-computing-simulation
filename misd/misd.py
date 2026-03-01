@@ -1,27 +1,31 @@
 from multiprocessing import Process, Queue
 
-def square(x, q):
-    result = x * x
-    print(f"Square of {x} = {result}")
-    q.put(("square", result))
+def matrix_sum(matrix, q):
+    total = sum(sum(row) for row in matrix)
+    print("Sum process result =", total)
+    q.put(("Sum", total))
 
-def cube(x, q):
-    result = x * x * x
-    print(f"Cube of {x} = {result}")
-    q.put(("cube", result))
+def matrix_transpose(matrix, q):
+    transpose = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
+    print("Transpose process result =", transpose)
+    q.put(("Transpose", transpose))
 
-def double(x, q):
-    result = x * 2
-    print(f"Double of {x} = {result}")
-    q.put(("double", result))
+def scalar_multiply(matrix, q):
+    result = [[element * 2 for element in row] for row in matrix]
+    print("Scalar x2 process result =", result)
+    q.put(("Scalar x2", result))
 
 if __name__ == "__main__":
-    q = Queue()
-    data = 5
+    A = [
+        [1, 2],
+        [3, 4]
+    ]
 
-    p1 = Process(target=square, args=(data, q))
-    p2 = Process(target=cube, args=(data, q))
-    p3 = Process(target=double, args=(data, q))
+    q = Queue()
+
+    p1 = Process(target=matrix_sum, args=(A, q))
+    p2 = Process(target=matrix_transpose, args=(A, q))
+    p3 = Process(target=scalar_multiply, args=(A, q))
 
     p1.start()
     p2.start()
@@ -31,5 +35,6 @@ if __name__ == "__main__":
     p2.join()
     p3.join()
 
-    results = [q.get() for _ in range(3)]
-    print("Sum MISD =", results)
+    print("\nMISD Final Results:")
+    for _ in range(3):
+        print(q.get())

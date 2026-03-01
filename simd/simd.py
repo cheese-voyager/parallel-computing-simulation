@@ -1,9 +1,16 @@
 import numpy as np
 
-if __name__ == "__main__":
-    data = np.array([1, 2, 3, 4, 5])
+A = np.array([
+    [1, 2],
+    [3, 4]
+])
 
-    result = data * 2
+B = np.array([
+    [5, 6],
+    [7, 8]
+])
 
-    print("Original Data :", data)
-    print("SIMD Result   :", result)
+result = A + B   # same instruction applied to all elements
+
+print("SIMD Matrix Addition Result:")
+print(result)
